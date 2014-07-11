@@ -13,7 +13,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     license='BSD',  # example license
-    description='A python package to build registries that can autodiscover values accross your project components.',
+    description='A python package to build registries that can autodiscover values accross your project components',
     long_description=README,
     url='http://code.eliotberriot.com/eliotberriot/persisting-theory',
     author='Eliot Berriot',

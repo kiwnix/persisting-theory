@@ -3,7 +3,7 @@ Introduction
 
 Persisting-theory is a small python utility designed to automate data discovering and access inside a list of packages. Use case: you are building an application that will have pluggable components. You want to allow these components to register data so it can be accessed by any other component of your app.
 
-If you ever used Django framework, you may remember this:
+If you ever used Django framework, you may remember this::
 
     from django.contrib import admin
     admin.autodiscover()
@@ -72,7 +72,7 @@ API
 
 ``Registry`` inherits from python built-in `collections.OrderedDict`, which means you can use regular dict methods to access registered data::
 
-    assert callbacks_registry.get("dog")() == "Wouf"
+    callbacks_registry.get("dog")()  #  will print Wouf
     assert callbacks_registry.get("chicken", None) is None
 
 Registry.register()
