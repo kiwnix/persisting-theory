@@ -3,7 +3,14 @@ Introduction
 
 Persisting-theory is a small python utility designed to automate data discovering and access inside a list of packages. Use case: you are building an application that will have pluggable components. You want to allow these components to register data so it can be accessed by any other component of your app.
 
-Okay, I'm bad at explaining things, and english is not my mother. Let's build a simple example.
+If you ever used Django framework, you may remember this:
+
+    from django.contrib import admin
+    admin.autodiscover()
+
+Basically, persisting-theory will do the same, except that it let you declare what you want to autodiscover.
+
+Okay, I'm bad at explaining things, and english is not my mother tongue. Let's build a simple example.
 
 Quickstart
 ==========
@@ -65,13 +72,13 @@ API
 
 ``Registry`` inherits from python built-in `collections.OrderedDict`, which means you can use regular dict methods to access registered data::
 
-    callbacks_registry.get("dog")()
-    # Wouf
+    assert callbacks_registry.get("dog")() == "Wouf"
+    assert callbacks_registry.get("chicken", None) is None
 
-Registry.register
-*****************
+Registry.register()
+*******************
 
-You can use this function as a decorator for functions and class::
+You can use this function as a decorator for registering functions and classes::
 
     from persiting_theory import Registry
 
@@ -118,10 +125,10 @@ You can use this function as a decorator for functions and class::
 
     # I f you are not registering a function or a class, you MUST provide a name argument
 
-Registry.validate
-*****************
+Registry.validate()
+*******************
 
-By default, a registry will accept any value registered. Sometimes, it's not what you want, so you can restric what kind of data you accept::
+By default, a registry will accept any registered value. Sometimes, it's not what you want, so you can restrict what kind of data your registry accepts::
 
     from persiting_theory import Registry
 
@@ -148,7 +155,6 @@ If you have multiple registries, or want to allow your apps to declare their own
     # registries.py
 
     from persisting_theory import meta_registry, Registry
-
 
     class RegistryA(Registry)
         look_into = "a"
@@ -179,7 +185,7 @@ It's an anagram for "python registries".
 Contribute
 ==========
 
-Contributions, bug reports, and thank you are welcomed. Feel free to contact me at <contact@eliotberriot.com>.
+Contributions, bug reports, and "thank you" are welcomed. Feel free to contact me at <contact@eliotberriot.com>.
 
 License
 =======
