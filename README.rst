@@ -80,7 +80,7 @@ Registry.register()
 
 You can use this function as a decorator for registering functions and classes::
 
-    from persiting_theory import Registry
+    from persisting_theory import Registry
 
     class AwesomeRegistry(Registry):
         pass
@@ -130,7 +130,7 @@ Registry.validate()
 
 By default, a registry will accept any registered value. Sometimes, it's not what you want, so you can restrict what kind of data your registry accepts::
 
-    from persiting_theory import Registry
+    from persisting_theory import Registry
 
     class StartsWithAwesomeRegistry(Registry):
 
@@ -139,7 +139,7 @@ By default, a registry will accept any registered value. Sometimes, it's not wha
                 return obj.startswith("awesome")
             return False
 
-    r = AwesomeRegistry()
+    r = StartsWithAwesomeRegistry()
 
     # will pass registration
     r.register("awesome day", name="awesome_day")
@@ -156,10 +156,10 @@ If you have multiple registries, or want to allow your apps to declare their own
 
     from persisting_theory import meta_registry, Registry
 
-    class RegistryA(Registry)
+    class RegistryA(Registry):
         look_into = "a"
     
-    class RegistryB(Registry)
+    class RegistryB(Registry):
         look_into = "b"
 
     registry_a = RegistryA()
