@@ -37,6 +37,20 @@ class RegistryTest(unittest.TestCase):
         self.assertEqual(len(registry), 1)
         self.assertEqual(registry.get("key"), data)
 
+    def test_can_restric_registered_data(self):
+
+        class RestrictedRegistry(registries.Registry):
+            def validate(self, obj):
+                """Only accept integer values"""
+                return isinstance(obj, int)
+
+        registry = RestrictedRegistry()
+
+        registry.register(12, name="twelve")
+        with self.assertRaises(ValueError):
+            registry.register("not an int", name="not an int")
+
+
     def test_can_register_class_and_function_via_decorator(self):
         registry = registries.Registry()
 
@@ -91,8 +105,6 @@ class RegistryTest(unittest.TestCase):
         self.assertNotEqual(registry.get('Potato', None), None)
         self.assertNotEqual(registry.get('Ketchup', None), None)
 
-    def test_reload_autodiscover(self):
-        fail
 
 if __name__ == '__main__':
     unittest.main()

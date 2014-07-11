@@ -45,13 +45,23 @@ class Registry(OrderedDict):
         else:
             raise ValueError("Cannot deduce name from given object ({0}). Please user registry.register() with a 'name' argument.".format(obj))
 
+    def validate(self, obj):
+        """
+            Called before registering a new value into the registry
+            Override this method if you want to restrict what type of data cna be registered
+        """
+        return True
+
     def register_func(self, obj, name=None, **kwargs):
         """
             Register an object, class, function... into the registry
         """
-        if name is None:
-            name = self.get_object_name(obj)
-        self[name] = obj
+        if self.validate(obj):
+            if name is None:
+                name = self.get_object_name(obj)
+            self[name] = obj
+        else:
+            raise ValueError("{0} (type: {0.__class__}) is not a valid value for {1} registry".format(obj, self.__class__))
 
     def autodiscover(self, apps, force_reload=True):
         """
@@ -68,7 +78,6 @@ class Registry(OrderedDict):
             except ImportError, e:
                 # Module does not exist 
                 pass
-                print(e)
 
 
 class MetaRegistry(Registry):
