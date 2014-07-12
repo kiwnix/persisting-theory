@@ -1,6 +1,14 @@
 from collections import OrderedDict
 import inspect
 
+try:
+    # use Python3 reload
+    from imp import reload
+
+except:
+    # we are on Python2
+    pass
+
 class Registry(OrderedDict):
 
     def register_decorator_factory(self, **kwargs):
@@ -75,7 +83,7 @@ class Registry(OrderedDict):
                 module = __import__(package)
                 if force_reload:
                     reload(module)
-            except ImportError, e:
+            except ImportError:
                 # Module does not exist 
                 pass
 
@@ -95,7 +103,7 @@ class MetaRegistry(Registry):
             self.autodiscover_registries(apps)
 
     def autodiscover_registries(self, apps):
-        for key, registry in self.iteritems():
+        for key, registry in self.items():
             registry.autodiscover(apps)
             
 meta_registry = MetaRegistry()

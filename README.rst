@@ -15,6 +15,18 @@ Okay, I'm bad at explaining things, and english is not my mother tongue. Let's b
 Quickstart
 ==========
 
+Install
+*******
+
+Install the package from [PyPi](https://pypi.python.org/pypi/persisting-theory/) via pip (or any other tool)::
+
+    pip install persisting-theory
+
+Persisting theory does not require any dependency but a python installation (it has been tested on Python 2.7 and Python 3.2).
+
+Setup
+*****
+
 A basic setup::
 
     # registries.py
