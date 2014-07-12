@@ -18,11 +18,11 @@ Quickstart
 Install
 *******
 
-Install the package from [PyPi](https://pypi.python.org/pypi/persisting-theory/) via pip (or any other tool)::
+Install the package from `PyPi <https://pypi.python.org/pypi/persisting-theory/>`_. via pip (or any other tool)::
 
     pip install persisting-theory
 
-Persisting theory does not require any dependency but a python installation (it has been tested on Python 2.7 and Python 3.2).
+Persisting-theory does not require any dependency but a python installation (it has been tested on python 2.7 and python 3.2).
 
 Setup
 *****
