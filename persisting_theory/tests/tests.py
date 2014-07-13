@@ -86,6 +86,11 @@ class RegistryTest(unittest.TestCase):
 
         registry.clear()
 
+    def test_autodiscover_raises_an_error_if_there_is_an_error_in_imported_module(self):
+        with self.assertRaises(NameError):
+            registry = test_registries.awesome_people
+            registry.autodiscover(apps=('buggy_app',))
+
     def test_meta_registry_can_autodiscovering_registries_and_trigger_their_autodiscover_method(self):
 
         registry = registries.meta_registry

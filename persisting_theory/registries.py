@@ -77,15 +77,28 @@ class Registry(OrderedDict):
             :param apps: an iterable of string, refering to python modules the registry will try to import via autodiscover
         """
         for app in apps:
+            app_package = __import__(app)
             try:
+
                 package = '{0}.{1}'.format(app, self.look_into) # try to import self.package inside current app
                 #print(package)
                 module = __import__(package)
                 if force_reload:
                     reload(module)
-            except ImportError:
-                # Module does not exist 
-                pass
+            except ImportError as exc:
+                # From django's syncdb
+                # This is slightly hackish. We want to ignore ImportErrors
+                # if the module itself is missing -- but we don't
+                # want to ignore the exception if the module exists
+                # but raises an ImportError for some reason. The only way we
+                # can do this is to check the text of the exception. Note that
+                # we're a bit broad in how we check the text, because different
+                # Python implementations may not use the same text.
+                # CPython uses the text "No module named"
+                # PyPy uses "No module named myproject.myapp"
+                msg = exc.args[0]
+                if not msg.startswith('No module named') or self.look_into not in msg:
+                    raise
 
 
 class MetaRegistry(Registry):
