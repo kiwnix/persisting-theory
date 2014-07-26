@@ -146,9 +146,9 @@ By default, a registry will accept any registered value. Sometimes, it's not wha
 
     class StartsWithAwesomeRegistry(Registry):
 
-        def validate(self, obj):
-            if isinstance(obj, str):
-                return obj.startswith("awesome")
+        def validate(self, data):
+            if isinstance(data, str):
+                return data.startswith("awesome")
             return False
 
     r = StartsWithAwesomeRegistry()
@@ -162,49 +162,56 @@ By default, a registry will accept any registered value. Sometimes, it's not wha
 Registry.prepare_data()
 ***********************
 
-If you want to manipulate your data before registering it, override this method. In this example, we add :
+If you want to manipulate your data before registering it, override this method. In this example, we prefix every registered string with 'hello':
 
     from persisting_theory import Registry
 
     class HelloRegistry(Registry):
 
-        def prepare_data(self, obj):
-            if isinstance(obj, str):
-                return obj.startswith("awesome")
-            return False
+        def prepare_data(self, data):
+            return 'hello ' + data 
 
     r = HelloRegistry()
 
-    class Somebody()
-    # will pass registration
-    r.register("awesome day", name="awesome_day")
+    class Greeting:
+        def __init__(self, first_name):
+            self.first_name = first_name
 
-    # will fail and raise ValueError
-    r.register("not so awesome day", name="not_so_awesome_day")
+
+    r.register(Greeting('World'), name="world")
+    r.register(Greeting('Eliot'), name="eliot")
+
+    assert r.register.get('world') == "hello World"
+    assert r.register.get('eliot') == "hello Eliot"
 
 
 Registry.prepare_name()
 ***********************
 
-If you want a dynamic name for the data you register, you can override this method:
+In a similar way, you can manipulate the name of registered data. This can help if you want to avoid repetitions. Let's improve our previous example:
 
     from persisting_theory import Registry
 
     class HelloRegistry(Registry):
 
-        def prepare_name(self, obj, name=None):
-            if isinstance(obj, str):
-                return obj.startswith("awesome")
-            return False
+        def prepare_data(self, data):
+            return 'hello ' + data 
+
+        def prepare_name(self, data, name=None):
+            return self.data.first_name.lower()
 
     r = HelloRegistry()
 
-    class Somebody()
-    # will pass registration
-    r.register("awesome day", name="awesome_day")
+    class Greeting:
+        def __init__(self, first_name):
+            self.first_name = first_name
 
-    # will fail and raise ValueError
-    r.register("not so awesome day", name="not_so_awesome_day")
+
+    r.register(Greeting('World'))
+    r.register(Greeting('Eliot'))
+
+    assert r.register.get('world') == "hello World"
+    assert r.register.get('eliot') == "hello Eliot"
 
 Going meta
 **********
