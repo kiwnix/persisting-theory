@@ -143,5 +143,20 @@ class RegistryTest(unittest.TestCase):
 
         self.assertEqual(r.get('custom_key eliot'), n1)
         self.assertEqual(r.get('custom_key alain'), n2)
+
+    def test_can_post_register_triggers_correctly(self):
+
+        class PostRegisterException(Exception):
+            pass
+
+        class PostRegister(registries.Registry):
+            def post_register(self, obj, name):
+                raise PostRegisterException('Post register triggered')
+
+        r = PostRegister()        
+
+        with self.assertRaises(PostRegisterException):
+            r.register("hello", name="world")
+
 if __name__ == '__main__':
     unittest.main()

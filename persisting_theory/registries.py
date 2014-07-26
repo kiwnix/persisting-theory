@@ -73,9 +73,12 @@ class Registry(OrderedDict):
             o = self.prepare_data(obj)
             n = self.prepare_name(obj, name)            
             self[n] = o            
-
+            self.post_register(obj=0, name=n)
         else:
             raise ValueError("{0} (type: {0.__class__}) is not a valid value for {1} registry".format(obj, self.__class__))
+
+    def post_register(self, obj, name):
+        pass
 
     def prepare_data(self, obj):
         """
