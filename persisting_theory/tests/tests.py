@@ -113,8 +113,8 @@ class RegistryTest(unittest.TestCase):
     def test_can_manipulate_data_before_registering(self):
 
         class ModifyData(registries.Registry):
-            def prepare_data(self, obj):
-                return "hello " + obj
+            def prepare_data(self, data):
+                return "hello " + data
 
         r = ModifyData()
 
@@ -127,17 +127,17 @@ class RegistryTest(unittest.TestCase):
     def test_can_manipulate_key_before_registering(self):
 
         class ModifyKey(registries.Registry):
-            def prepare_name(self, obj, key=None):
-                return "custom_key " + obj.name
+            def prepare_name(self, data, key=None):
+                return "custom_key " + data.first_name
 
         r = ModifyKey()
 
         class N:
-            def __init__(self, name):
-                self.name = name
+            def __init__(self, first_name):
+                self.first_name = first_name
 
-        n1 = N(name="eliot")
-        n2 = N(name="alain")
+        n1 = N(first_name="eliot")
+        n2 = N(first_name="alain")
         r.register(n1)
         r.register(n2)
 
@@ -150,7 +150,7 @@ class RegistryTest(unittest.TestCase):
             pass
 
         class PostRegister(registries.Registry):
-            def post_register(self, obj, name):
+            def post_register(self, data, name):
                 raise PostRegisterException('Post register triggered')
 
         r = PostRegister()        

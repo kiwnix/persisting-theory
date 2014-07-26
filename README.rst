@@ -159,6 +159,53 @@ By default, a registry will accept any registered value. Sometimes, it's not wha
     # will fail and raise ValueError
     r.register("not so awesome day", name="not_so_awesome_day")
 
+Registry.prepare_data()
+***********************
+
+If you want to manipulate your data before registering it, override this method. In this example, we add :
+
+    from persisting_theory import Registry
+
+    class HelloRegistry(Registry):
+
+        def prepare_data(self, obj):
+            if isinstance(obj, str):
+                return obj.startswith("awesome")
+            return False
+
+    r = HelloRegistry()
+
+    class Somebody()
+    # will pass registration
+    r.register("awesome day", name="awesome_day")
+
+    # will fail and raise ValueError
+    r.register("not so awesome day", name="not_so_awesome_day")
+
+
+Registry.prepare_name()
+***********************
+
+If you want a dynamic name for the data you register, you can override this method:
+
+    from persisting_theory import Registry
+
+    class HelloRegistry(Registry):
+
+        def prepare_name(self, obj, name=None):
+            if isinstance(obj, str):
+                return obj.startswith("awesome")
+            return False
+
+    r = HelloRegistry()
+
+    class Somebody()
+    # will pass registration
+    r.register("awesome day", name="awesome_day")
+
+    # will fail and raise ValueError
+    r.register("not so awesome day", name="not_so_awesome_day")
+
 Going meta
 **********
 

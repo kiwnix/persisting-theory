@@ -1,3 +1,3 @@
 from registries import Registry, meta_registry
 
-__version__ = "0.1.2"
+__version__ = "0.2.0"

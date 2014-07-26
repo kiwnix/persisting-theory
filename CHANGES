@@ -1,6 +1,15 @@
 Changelog
 =========
 
+0.2.0
+*****
+
+26/07/2014:
+
+- Added prepare_data hook for manipulating data before registration
+- Added prepare_name hook for manipulating name before registration
+- Added post_register hook
+
 0.1.2
 *****
 

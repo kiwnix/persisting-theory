@@ -17,11 +17,11 @@ class Registry(OrderedDict):
         """ 
         name = kwargs.get('name')
         def decorator(decorated):
-            self.register_func(obj=decorated, name=name)
+            self.register_func(data=decorated, name=name)
             return decorated
         return decorator
 
-    def register(self, obj=None, name=None, **kwargs):
+    def register(self, data=None, name=None, **kwargs):
         """
             Use this method as a decorator on class/function you want to register:
 
@@ -29,67 +29,68 @@ class Registry(OrderedDict):
             class Test:
                 pass
 
-            :param:obj: An object to register in the registry
-            :param:name: The name of the object to register. If none, the obj class name will be used
-
+            :param:data: Something to register in the registry
+            :param:name: The unique name that will identify registered data. 
+            If None, by default, registry will try to deduce name from class name (if object is a class or an object).
+            You can change this behaviour by overriding :py::method:`prepare_name`
 
         """
-        if obj is None:
-            return self.register_decorator_factory(obj=obj, name=name, **kwargs)
+        if data is None:
+            return self.register_decorator_factory(data=data, name=name, **kwargs)
         else:
-            self.register_func(obj=obj, name=name, **kwargs)
-            return obj
+            self.register_func(data=data, name=name, **kwargs)
+            return data
 
-    def get_object_name(self, obj):
+    def get_object_name(self, data):
         """
             Return a name from an element (object, class, function...)
         """
-        if callable(obj):
-            return obj.__name__
+        if callable(data):
+            return data.__name__
 
-        elif inspect.isclass(obj):
-            return obj.__class__.__name__
+        elif inspect.isclass(data):
+            return data.__class__.__name__
 
         else:
-            raise ValueError("Cannot deduce name from given object ({0}). Please user registry.register() with a 'name' argument.".format(obj))
+            raise ValueError("Cannot deduce name from given object ({0}). Please user registry.register() with a 'name' argument.".format(data))
 
-    def validate(self, obj):
+    def validate(self, data):
         """
             Called before registering a new value into the registry
             Override this method if you want to restrict what type of data cna be registered
         """
         return True
 
-    def prepare_name(self, obj, name=None):
+    def prepare_name(self, data, name=None):
         if name is None:
-            return self.get_object_name(obj)
+            return self.get_object_name(data)
         return name
 
-    def register_func(self, obj, name=None, **kwargs):
+    def register_func(self, data, name=None, **kwargs):
         """
-            Register an object, class, function... into the registry
+            Register abritrary data into the registry
         """
-        if self.validate(obj):
-            o = self.prepare_data(obj)
-            n = self.prepare_name(obj, name)            
+        if self.validate(data):
+            o = self.prepare_data(data)
+            n = self.prepare_name(data, name)            
             self[n] = o            
-            self.post_register(obj=0, name=n)
+            self.post_register(data=0, name=n)
         else:
-            raise ValueError("{0} (type: {0.__class__}) is not a valid value for {1} registry".format(obj, self.__class__))
+            raise ValueError("{0} (type: {0.__class__}) is not a valid value for {1} registry".format(data, self.__class__))
 
-    def post_register(self, obj, name):
+    def post_register(self, data, name):
         """
         Will be triggered each time a new element is successfully registered.
         Feel free to override this method
         """
         pass
 
-    def prepare_data(self, obj):
+    def prepare_data(self, data):
         """
             Override this methode if you want to manipulate data before registering it
             You MUST return a value to register
         """
-        return obj
+        return data
 
 
     def autodiscover(self, apps, force_reload=True):
