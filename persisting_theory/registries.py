@@ -67,9 +67,15 @@ class Registry(OrderedDict):
         if self.validate(obj):
             if name is None:
                 name = self.get_object_name(obj)
-            self[name] = obj
+            self[name] = self.prepare_data(obj)
         else:
             raise ValueError("{0} (type: {0.__class__}) is not a valid value for {1} registry".format(obj, self.__class__))
+
+    def prepare_data(self, obj):
+        """
+            Override this methode if you want to manipulate data before registering it
+        """
+        return obj
 
     def autodiscover(self, apps, force_reload=True):
         """

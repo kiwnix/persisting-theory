@@ -110,6 +110,19 @@ class RegistryTest(unittest.TestCase):
         self.assertNotEqual(registry.get('Potato', None), None)
         self.assertNotEqual(registry.get('Ketchup', None), None)
 
+    def test_can_manipulate_data_before_registering(self):
+
+        class ModifyData(registries.Registry):
+            def prepare_data(self, obj):
+                return "hello " + obj
+
+        r = ModifyData()
+
+        r.register("eliot", name="eliot")
+        r.register("roger", name="roger")
+
+        self.assertEqual(r.get('eliot'), "hello eliot")
+        self.assertEqual(r.get('roger'), "hello roger")
 
 if __name__ == '__main__':
     unittest.main()
