@@ -23,7 +23,7 @@ class Registry(OrderedDict):
 
     def register(self, obj=None, name=None, **kwargs):
         """
-            Use this method as a decorator on class/funciton you want to register:
+            Use this method as a decorator on class/function you want to register:
 
             @registry.register(name="test")
             class Test:
@@ -60,22 +60,30 @@ class Registry(OrderedDict):
         """
         return True
 
+    def prepare_name(self, obj, name=None):
+        if name is None:
+            return self.get_object_name(obj)
+        return name
+
     def register_func(self, obj, name=None, **kwargs):
         """
             Register an object, class, function... into the registry
         """
         if self.validate(obj):
-            if name is None:
-                name = self.get_object_name(obj)
-            self[name] = self.prepare_data(obj)
+            o = self.prepare_data(obj)
+            n = self.prepare_name(obj, name)            
+            self[n] = o            
+
         else:
             raise ValueError("{0} (type: {0.__class__}) is not a valid value for {1} registry".format(obj, self.__class__))
 
     def prepare_data(self, obj):
         """
             Override this methode if you want to manipulate data before registering it
+            You MUST return a value to register
         """
         return obj
+
 
     def autodiscover(self, apps, force_reload=True):
         """

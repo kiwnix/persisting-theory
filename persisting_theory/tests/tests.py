@@ -124,5 +124,24 @@ class RegistryTest(unittest.TestCase):
         self.assertEqual(r.get('eliot'), "hello eliot")
         self.assertEqual(r.get('roger'), "hello roger")
 
+    def test_can_manipulate_key_before_registering(self):
+
+        class ModifyKey(registries.Registry):
+            def prepare_name(self, obj, key=None):
+                return "custom_key " + obj.name
+
+        r = ModifyKey()
+
+        class N:
+            def __init__(self, name):
+                self.name = name
+
+        n1 = N(name="eliot")
+        n2 = N(name="alain")
+        r.register(n1)
+        r.register(n2)
+
+        self.assertEqual(r.get('custom_key eliot'), n1)
+        self.assertEqual(r.get('custom_key alain'), n2)
 if __name__ == '__main__':
     unittest.main()
