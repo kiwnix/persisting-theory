@@ -162,7 +162,7 @@ By default, a registry will accept any registered value. Sometimes, it's not wha
 Registry.prepare_data()
 ***********************
 
-If you want to manipulate your data before registering it, override this method. In this example, we prefix every registered string with 'hello':
+If you want to manipulate your data before registering it, override this method. In this example, we prefix every registered string with 'hello'::
 
     from persisting_theory import Registry
 
@@ -188,7 +188,7 @@ If you want to manipulate your data before registering it, override this method.
 Registry.prepare_name()
 ***********************
 
-In a similar way, you can manipulate the name of registered data. This can help if you want to avoid repetitions. Let's improve our previous example:
+In a similar way, you can manipulate the name of registered data. This can help if you want to avoid repetitions. Let's improve our previous example::
 
     from persisting_theory import Registry
 
