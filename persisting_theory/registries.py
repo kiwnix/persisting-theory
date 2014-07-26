@@ -78,6 +78,10 @@ class Registry(OrderedDict):
             raise ValueError("{0} (type: {0.__class__}) is not a valid value for {1} registry".format(obj, self.__class__))
 
     def post_register(self, obj, name):
+        """
+        Will be triggered each time a new element is successfully registered.
+        Feel free to override this method
+        """
         pass
 
     def prepare_data(self, obj):
