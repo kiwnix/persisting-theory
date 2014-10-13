@@ -1,6 +1,6 @@
 import os
 from setuptools import setup, find_packages
-import persisting_theory
+import persisting_theory as package
 
 README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
@@ -9,11 +9,11 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='persisting-theory',
-    version=persisting_theory.__version__,
+    version=package.__version__,
     packages=find_packages(),
     include_package_data=True,
     license='BSD',  # example license
-    description='A python package to build registries that can autodiscover values accross your project components',
+    description='Registries that can autodiscover values accross your project apps',
     long_description=README,
     url='http://code.eliotberriot.com/eliotberriot/persisting-theory',
     author='Eliot Berriot',

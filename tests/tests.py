@@ -1,20 +1,19 @@
-import os, sys
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-import unittest 
-import test_registries
-import registries
 
-registries.meta_registry.look_into = "test_registries"
+import unittest 
+from . import test_registries
+import persisting_theory
+
+persisting_theory.meta_registry.look_into = "test_registries"
 
 TEST_APPS = (
-    "app1",
-    "app2",
+    "tests.app1",
+    "tests.app2",
 )
 
 class RegistryTest(unittest.TestCase):
 
     def test_can_infer_name_from_class_function_and_instance(self):
-        registry = registries.Registry()
+        registry = persisting_theory.Registry()
 
         def something():
             pass
@@ -31,7 +30,7 @@ class RegistryTest(unittest.TestCase):
     def test_can_register_data_to_registry(self):
 
         data = "something"
-        registry = registries.Registry()
+        registry = persisting_theory.Registry()
         registry.register(data, name="key")
 
         self.assertEqual(len(registry), 1)
@@ -39,7 +38,7 @@ class RegistryTest(unittest.TestCase):
 
     def test_can_restric_registered_data(self):
 
-        class RestrictedRegistry(registries.Registry):
+        class RestrictedRegistry(persisting_theory.Registry):
             def validate(self, obj):
                 """Only accept integer values"""
                 return isinstance(obj, int)
@@ -52,7 +51,7 @@ class RegistryTest(unittest.TestCase):
 
 
     def test_can_register_class_and_function_via_decorator(self):
-        registry = registries.Registry()
+        registry = persisting_theory.Registry()
 
         @registry.register
         class ToRegister:
@@ -67,7 +66,7 @@ class RegistryTest(unittest.TestCase):
         self.assertEqual(registry.get('something'), something)
             
     def test_can_register_via_decorator_using_custom_name(self):
-        registry = registries.Registry()
+        registry = persisting_theory.Registry()
 
         @registry.register(name="custom_name")
         def something():
@@ -89,11 +88,11 @@ class RegistryTest(unittest.TestCase):
     def test_autodiscover_raises_an_error_if_there_is_an_error_in_imported_module(self):
         with self.assertRaises(NameError):
             registry = test_registries.awesome_people
-            registry.autodiscover(apps=('buggy_app',))
+            registry.autodiscover(apps=('tests.buggy_app',))
 
     def test_meta_registry_can_autodiscovering_registries_and_trigger_their_autodiscover_method(self):
 
-        registry = registries.meta_registry
+        registry = persisting_theory.meta_registry
         registry.autodiscover(apps=TEST_APPS)
 
         self.assertEqual(len(registry), 2)
@@ -112,7 +111,7 @@ class RegistryTest(unittest.TestCase):
 
     def test_can_manipulate_data_before_registering(self):
 
-        class ModifyData(registries.Registry):
+        class ModifyData(persisting_theory.Registry):
             def prepare_data(self, data):
                 return "hello " + data
 
@@ -126,7 +125,7 @@ class RegistryTest(unittest.TestCase):
 
     def test_can_manipulate_key_before_registering(self):
 
-        class ModifyKey(registries.Registry):
+        class ModifyKey(persisting_theory.Registry):
             def prepare_name(self, data, key=None):
                 return "custom_key " + data.first_name
 
@@ -149,7 +148,7 @@ class RegistryTest(unittest.TestCase):
         class PostRegisterException(Exception):
             pass
 
-        class PostRegister(registries.Registry):
+        class PostRegister(persisting_theory.Registry):
             def post_register(self, data, name):
                 raise PostRegisterException('Post register triggered')
 

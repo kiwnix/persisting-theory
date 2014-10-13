@@ -1,4 +1,4 @@
-from registries import Registry, meta_registry
+from persisting_theory import Registry, meta_registry
 
 class AwesomePeopleRegistry(Registry):
     look_into = "awesome_people"
