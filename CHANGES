@@ -1,6 +1,16 @@
 Changelog
 =========
 
+
+0.2.1
+*****
+
+13/10/2014:
+
+- Added tox to testing process (persisting theory is now tested under Python 2.7 and 3.4)
+- Moved test directory outside of persisting-theory
+- Set ``force_reload`` defaut to ``False`` to  in Registry.autodiscover()
+
 0.2.0
 *****
 

@@ -93,7 +93,7 @@ class Registry(OrderedDict):
         return data
 
 
-    def autodiscover(self, apps, force_reload=True):
+    def autodiscover(self, apps, force_reload=False):
         """
             Iterate throught every installed apps, trying to import `look_into` package
             :param apps: an iterable of string, refering to python modules the registry will try to import via autodiscover

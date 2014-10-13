@@ -157,5 +157,6 @@ class RegistryTest(unittest.TestCase):
         with self.assertRaises(PostRegisterException):
             r.register("hello", name="world")
 
+
 if __name__ == '__main__':
     unittest.main()
