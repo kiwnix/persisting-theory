@@ -22,7 +22,7 @@ Install the package from `PyPi <https://pypi.python.org/pypi/persisting-theory/>
 
     pip install persisting-theory
 
-Persisting-theory does not require any dependency but a python installation (it has been tested on python 2.7 and python 3.2).
+Persisting-theory does not require any dependency but a python installation (it has been tested on python 2.7 and python 3.4).
 
 Setup
 *****
