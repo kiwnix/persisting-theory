@@ -1,9 +1,12 @@
 Introduction
 ============
 
-Persisting-theory is a small python utility designed to automate data discovering and access inside a list of packages. Use case: you are building an application that will have pluggable components. You want to allow these components to register data so it can be accessed by any other component of your app.
+For more details about what kind of problems this package tries to solve, please refer to http://next.kii.eliotberriot.com/stream/eliotberriot/items/25.
 
-If you ever used Django framework, you may remember this::
+Persisting-theory is a small python utility designed to automate data discovering and access inside a list of packages. Use case: you are building an application that will have pluggable components. You want to allow these components to register data so it can be accessed by any other component of your app.
+If you ever used Django framework, you may remember this:
+
+.. code-block:: python
 
     from django.contrib import admin
     admin.autodiscover()
@@ -27,7 +30,9 @@ Persisting-theory does not require any dependency but a python installation (it 
 Setup
 *****
 
-A basic setup::
+A basic setup:
+
+.. code-block:: python
 
     # registries.py
 
@@ -64,12 +69,12 @@ A basic setup::
     # dosomething.py
 
     from registries import callbacks_registry
-    
+
     APPS = (
         'app1',
         'app2',
     )
-    
+
     # Trigger autodiscovering process
     callbacks_registry.autodiscover(APPS)
 
@@ -82,7 +87,9 @@ A basic setup::
 API
 ===
 
-``Registry`` inherits from python built-in `collections.OrderedDict`, which means you can use regular dict methods to access registered data::
+``Registry`` inherits from python built-in `collections.OrderedDict`, which means you can use regular dict methods to access registered data:
+
+.. code-block:: python
 
     callbacks_registry.get("dog")()  #  will print Wouf
     assert callbacks_registry.get("chicken", None) is None
@@ -90,7 +97,9 @@ API
 Registry.register()
 *******************
 
-You can use this function as a decorator for registering functions and classes::
+You can use this function as a decorator for registering functions and classes:
+
+.. code-block:: python
 
     from persisting_theory import Registry
 
@@ -140,7 +149,9 @@ You can use this function as a decorator for registering functions and classes::
 Registry.validate()
 *******************
 
-By default, a registry will accept any registered value. Sometimes, it's not what you want, so you can restrict what kind of data your registry accepts::
+By default, a registry will accept any registered value. Sometimes, it's not what you want, so you can restrict what kind of data your registry accepts:
+
+.. code-block:: python
 
     from persisting_theory import Registry
 
@@ -162,14 +173,16 @@ By default, a registry will accept any registered value. Sometimes, it's not wha
 Registry.prepare_data()
 ***********************
 
-If you want to manipulate your data before registering it, override this method. In this example, we prefix every registered string with 'hello'::
+If you want to manipulate your data before registering it, override this method. In this example, we prefix every registered string with 'hello':
+
+.. code-block:: python
 
     from persisting_theory import Registry
 
     class HelloRegistry(Registry):
 
         def prepare_data(self, data):
-            return 'hello ' + data 
+            return 'hello ' + data
 
     r = HelloRegistry()
 
@@ -188,14 +201,16 @@ If you want to manipulate your data before registering it, override this method.
 Registry.prepare_name()
 ***********************
 
-In a similar way, you can manipulate the name of registered data. This can help if you want to avoid repetitions. Let's improve our previous example::
+In a similar way, you can manipulate the name of registered data. This can help if you want to avoid repetitions. Let's improve our previous example:
+
+.. code-block:: python
 
     from persisting_theory import Registry
 
     class HelloRegistry(Registry):
 
         def prepare_data(self, data):
-            return 'hello ' + data 
+            return 'hello ' + data
 
         def prepare_name(self, data, name=None):
             return self.data.first_name.lower()
@@ -216,7 +231,9 @@ In a similar way, you can manipulate the name of registered data. This can help 
 Going meta
 **********
 
-If you have multiple registries, or want to allow your apps to declare their own registries, this is for you::
+If you have multiple registries, or want to allow your apps to declare their own registries, this is for you:
+
+.. code-block:: python
 
     # registries.py
 
@@ -224,7 +241,7 @@ If you have multiple registries, or want to allow your apps to declare their own
 
     class RegistryA(Registry):
         look_into = "a"
-    
+
     class RegistryB(Registry):
         look_into = "b"
 
@@ -246,7 +263,7 @@ If you have multiple registries, or want to allow your apps to declare their own
 What the hell is that name ?
 ============================
 
-It's an anagram for "python registries". 
+It's an anagram for "python registries".
 
 Contribute
 ==========
