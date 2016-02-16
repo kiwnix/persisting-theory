@@ -45,12 +45,19 @@ class QuerySet(object):
 
         def object_filter(obj):
             for key, value in kwargs.items():
-                if not getattr(obj, key) == value:
+                # we replace dango-like lookup by dots, so attrgetter can do his job
+                key = key.replace('__', '.')
+
+                getter = operator.attrgetter(key)
+                if not getter(obj) == value:
                     return False
             return True
 
         return object_filter
 
+    def exists(self):
+        return len(self) > 0
+        
     def order_by(self, key):
         reverse = False
         if key.startswith('-'):

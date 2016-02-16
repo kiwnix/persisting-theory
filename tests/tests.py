@@ -168,12 +168,15 @@ class TestObject(object):
         return self.name
 
 class TestManagers(unittest.TestCase):
-
+    PARENTS = [
+        TestObject(name='parent_1'),
+        TestObject(name='parent_2'),
+    ]
     OBJECTS = [
-        TestObject(name='test_1', order=2, a=1),
-        TestObject(name='test_2', order=3, a=1),
-        TestObject(name='test_3', order=1, a=2),
-        TestObject(name='test_4', order=4, a=2),
+        TestObject(name='test_1', order=2, a=1, parent=PARENTS[0]),
+        TestObject(name='test_2', order=3, a=1, parent=PARENTS[0]),
+        TestObject(name='test_3', order=1, a=2, parent=PARENTS[1]),
+        TestObject(name='test_4', order=4, a=2, parent=PARENTS[1]),
     ]
     def setUp(self):
         class R(persisting_theory.Registry):
@@ -195,6 +198,11 @@ class TestManagers(unittest.TestCase):
     def test_can_combine_filters(self):
         self.assertEqual(self.registry.objects.filter(a=1, name='test_2'), self.OBJECTS[1:2])
         self.assertEqual(self.registry.objects.filter(a=1).filter(name='test_2'), self.OBJECTS[1:2])
+
+    def test_related_lookups(self):
+        self.assertEqual(self.registry.objects.filter(parent__name='parent_1'), self.OBJECTS[:2])
+        self.assertEqual(self.registry.objects.exclude(parent__name='parent_1'), self.OBJECTS[2:])
+        self.assertEqual(self.registry.objects.get(parent__name='parent_1', order=2), self.OBJECTS[0])
 
     def test_can_exclude(self):
         self.assertEqual(self.registry.objects.exclude(a=1), self.OBJECTS[2:])
@@ -218,6 +226,10 @@ class TestManagers(unittest.TestCase):
         self.assertIsNone(self.registry.objects.filter(a=123).last())
         self.assertIsNotNone(self.registry.objects.filter(a=1).last())
 
+    def test_exists(self):
+        self.assertFalse(self.registry.objects.filter(a=123).exists())
+        self.assertTrue(self.registry.objects.filter(a=1).exists())
+        
     def test_get_raise_exception_on_multiple_objects_returned(self):
         with self.assertRaises(persisting_theory.MultipleObjectsReturned):
             self.registry.objects.get(a=1)
