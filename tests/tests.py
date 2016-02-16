@@ -1,5 +1,5 @@
 
-import unittest 
+import unittest
 from . import test_registries
 import persisting_theory
 
@@ -64,7 +64,7 @@ class RegistryTest(unittest.TestCase):
             pass
 
         self.assertEqual(registry.get('something'), something)
-            
+
     def test_can_register_via_decorator_using_custom_name(self):
         registry = persisting_theory.Registry()
 
@@ -152,11 +152,79 @@ class RegistryTest(unittest.TestCase):
             def post_register(self, data, name):
                 raise PostRegisterException('Post register triggered')
 
-        r = PostRegister()        
+        r = PostRegister()
 
         with self.assertRaises(PostRegisterException):
             r.register("hello", name="world")
 
+
+class TestObject(object):
+    def __init__(self, name, **kwargs):
+        self.name = name
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def __repr__(self):
+        return self.name
+
+class TestManagers(unittest.TestCase):
+
+    OBJECTS = [
+        TestObject(name='test_1', order=2, a=1),
+        TestObject(name='test_2', order=3, a=1),
+        TestObject(name='test_3', order=1, a=2),
+        TestObject(name='test_4', order=4, a=2),
+    ]
+    def setUp(self):
+        class R(persisting_theory.Registry):
+            def prepare_name(self, data, key=None):
+                return data.name
+        self.registry = R()
+        for o in self.OBJECTS:
+            self.registry.register(o)
+
+    def test_default_order(self):
+        self.assertEqual(list(self.registry.objects.all()), self.OBJECTS)
+
+    def test_can_get_using_attribute(self):
+        self.assertEqual(self.registry.objects.get(name='test_1'), self.OBJECTS[0])
+
+    def test_can_filter(self):
+        self.assertEqual(self.registry.objects.filter(a=1), self.OBJECTS[:2])
+
+    def test_can_combine_filters(self):
+        self.assertEqual(self.registry.objects.filter(a=1, name='test_2'), self.OBJECTS[1:2])
+        self.assertEqual(self.registry.objects.filter(a=1).filter(name='test_2'), self.OBJECTS[1:2])
+
+    def test_can_exclude(self):
+        self.assertEqual(self.registry.objects.exclude(a=1), self.OBJECTS[2:])
+
+    def test_can_combine_exclude(self):
+        self.assertEqual(self.registry.objects.exclude(a=1).exclude(name='test_4'), self.OBJECTS[2:3])
+        self.assertEqual(self.registry.objects.exclude(a=2, name='test_4'), self.OBJECTS[:3])
+
+    def test_can_count(self):
+        self.assertEqual(self.registry.objects.filter(a=1).count(), 2)
+
+    def test_first(self):
+        self.assertIsNone(self.registry.objects.filter(a=123).first())
+        self.assertIsNotNone(self.registry.objects.filter(a=1).first())
+
+    def test_ordering(self):
+        self.assertEqual(self.registry.objects.order_by('order')[:2], [self.OBJECTS[2], self.OBJECTS[0]])
+        self.assertEqual(self.registry.objects.order_by('-order')[:2], [self.OBJECTS[3], self.OBJECTS[1]])
+
+    def test_last(self):
+        self.assertIsNone(self.registry.objects.filter(a=123).last())
+        self.assertIsNotNone(self.registry.objects.filter(a=1).last())
+
+    def test_get_raise_exception_on_multiple_objects_returned(self):
+        with self.assertRaises(persisting_theory.MultipleObjectsReturned):
+            self.registry.objects.get(a=1)
+
+    def test_get_raise_exception_on_does_not_exist(self):
+        with self.assertRaises(persisting_theory.DoesNotExist):
+            self.registry.objects.get(a=123)
 
 if __name__ == '__main__':
     unittest.main()
