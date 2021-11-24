@@ -4,7 +4,7 @@ import operator
 
 try:
     # use Python3 reload
-    from imp import reload
+    from importlib import reload
 
 except:
     # we are on Python2
